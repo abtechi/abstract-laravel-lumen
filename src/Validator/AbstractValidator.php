@@ -5,7 +5,7 @@ namespace Abtechi\Laravel\Validator;
 /**
  * Classe base para realização das validações da Request
  * Class AbstractValidator
- * @package Abtechi\Laravel\Validators
+ * @package Abtechi\Laravel\Validator
  */
 abstract class AbstractValidator
 {

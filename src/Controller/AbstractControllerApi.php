@@ -3,8 +3,8 @@
 namespace Abtechi\Laravel\Controller;
 
 use Abtechi\Laravel\Application\AbstractApplication;
-use Abtechi\Laravel\Validators\AbstractValidator;
-use Laravel\Lumen\Routing\Controller;
+use Abtechi\Laravel\Validator\AbstractValidator;
+use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
 
 class AbstractControllerApi extends Controller
@@ -31,7 +31,7 @@ class AbstractControllerApi extends Controller
      * Lista um ou todos os registros
      * @param null $uuid
      * @param Request $request
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\Response
      */
     public function listar($uuid = null, Request $request)
     {
@@ -52,7 +52,7 @@ class AbstractControllerApi extends Controller
      * Visualizar um determinado registro
      * @param null $uuid
      * @param Request $request
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\Response
      */
     public function visualizar($uuid = null, Request $request)
     {
@@ -72,7 +72,7 @@ class AbstractControllerApi extends Controller
      */
     public function incluir(Request $request)
     {
-        $this->validate($request, $this->validator::$rules, $this->validator::$messages);
+        $this->validate($request, static::$rules, static::$messages);
 
         $result = $this->application->create($request);
 
@@ -95,7 +95,7 @@ class AbstractControllerApi extends Controller
      */
     public function editar($uuid, Request $request)
     {
-        $this->validate($request, $this->validator::$rules, $this->validator::$messages);
+        $this->validate($request, static::$rules, static::$messages);
 
         $result = $this->application->update($uuid, $request);
 
@@ -134,7 +134,7 @@ class AbstractControllerApi extends Controller
     /**
      * Recupera a listagem em formato de options json: [chave => valor]
      * @param Request $request
-     * @return \Illuminate\Http\Response|\Laravel\Lumen\Http\ResponseFactory
+     * @return \Illuminate\Http\Response
      */
     public function listarOptions(Request $request)
     {
