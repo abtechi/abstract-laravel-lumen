@@ -89,9 +89,7 @@ abstract class AbstractService
             $orderBy = [];
         }
 
-        $result = $this->repository->findAll($params, $orderBy, $pagination, $pageSize);
-
-        return new Result(true, null, $result);
+        return $this->repository->findAll($params, $orderBy, $pagination, $pageSize);
     }
 
     /**
@@ -226,7 +224,7 @@ abstract class AbstractService
         $result = $this->findAll($params, $order, false);
 
         if (!$result->isResult()) {
-            return new Result(true, null, []);
+            return $result;
         }
 
         if (count($options) !== 2) {

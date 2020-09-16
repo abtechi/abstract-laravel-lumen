@@ -6,6 +6,7 @@ use Abtechi\Laravel\Application\AbstractApplication;
 use Abtechi\Laravel\Validator\AbstractValidator;
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AbstractControllerApi extends Controller
 {
@@ -45,7 +46,7 @@ class AbstractControllerApi extends Controller
             return response()->json($result->getData(), 200);
         }
 
-        return response()->json($result->getMessage(), 200);
+        return response()->json($result, 400);
     }
 
     /**
@@ -72,7 +73,11 @@ class AbstractControllerApi extends Controller
      */
     public function incluir(Request $request)
     {
-        $this->validate($request, static::$rules, static::$messages);
+        $validate = Validator::make($request->all(), $this->validator::$rules, $this->validator::$messages);
+
+        if ($validate->fails()) {
+            return response($validate->messages()->toArray(), 400);
+        }
 
         $result = $this->application->create($request);
 
@@ -95,7 +100,11 @@ class AbstractControllerApi extends Controller
      */
     public function editar($uuid, Request $request)
     {
-        $this->validate($request, static::$rules, static::$messages);
+        $validate = Validator::make($request->all(), $this->validator::$rules, $this->validator::$messages);
+
+        if ($validate->fails()) {
+            return response($validate->messages()->toArray(), 400);
+        }
 
         $result = $this->application->update($uuid, $request);
 
@@ -140,6 +149,14 @@ class AbstractControllerApi extends Controller
     {
         $result = $this->application->listOptions($request);
 
-        return response()->json($result->getData());
+        if (!$result->isResult()) {
+            return response()->json((array)$result, 400);
+        }
+
+        if ($result->getData()) {
+            return response()->json($result->getData(), 200);
+        }
+
+        return response()->json(null, 200);
     }
 }
