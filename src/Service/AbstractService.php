@@ -83,10 +83,11 @@ abstract class AbstractService
 
         $validator = static::$validator;
 
-        if (key_exists(key($order), $validator::$attributes)) {
-            $orderBy[$validator::$attributes[key($order)]] = $order[key($order)];
-        } else {
-            $orderBy = [];
+        $orderBy = [];
+        foreach ($order as $key => $orderer) {
+            if (key_exists($key, $validator::$attributes)) {
+                $orderBy[$key] = $orderer;
+            }
         }
 
         return $this->repository->findAll($params, $orderBy, $pagination, $pageSize);
