@@ -22,6 +22,8 @@ abstract class AbstractRepository
 
     protected $withSelect = false;
 
+    protected $disableWithoutGlobalScopes = [];
+
     /** @var Model */
     public static $model = Model::class;
 
@@ -123,6 +125,7 @@ abstract class AbstractRepository
 
         /** @var Model $model */
         $this->objectModel = new static::$model;
+
         $this->describeModel();
         $this->querySelect = clone $this->objectModel;
 
@@ -136,6 +139,10 @@ abstract class AbstractRepository
 
         if ($order) {
             $this->querySelect = $this->orderBy($order);
+        }
+
+        if (count($this->disableWithoutGlobalScopes)) {
+            $this->querySelect->withoutGlobalScopes($this->disableWithoutGlobalScopes);
         }
 
         if ($pagination) {
@@ -157,13 +164,31 @@ abstract class AbstractRepository
     }
 
     /**
-     * Remove um registro
      * @param Model $model
-     * @return mixed
+     * @param array $data
+     * @return bool|null
      */
-    public function delete(Model $model)
+    public function delete(Model $model, array $data = [])
     {
         return $model->delete();
+    }
+
+    /**
+     * @return array
+     */
+    public function getDisableWithoutGlobalScopes()
+    {
+        return $this->disableWithoutGlobalScopes;
+    }
+
+    /**
+     * @param array $disableWithoutGlobalScopes
+     * @return AbstractRepository
+     */
+    public function setDisableWithoutGlobalScopes(array $disableWithoutGlobalScopes)
+    {
+        $this->disableWithoutGlobalScopes = $disableWithoutGlobalScopes;
+        return $this;
     }
 
     /**
